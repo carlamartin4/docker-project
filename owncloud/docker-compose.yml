@@ -7,9 +7,13 @@ services:
     restart: always
     ports:
       - 8080:80
+    volumes:
+      - ./../owncloud-web-data:/var/www/html
 
   mysql:
     image: mariadb
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: example
+    volumes:
+      - ./../owncloud-db-data:/var/lib/mysql
