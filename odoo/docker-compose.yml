@@ -6,8 +6,16 @@ services:
       - db
     ports:
       - "8069:8069"
+    volumes:
+      - ./../odoo-data/odoo-web-data:/var/lib/odoo
+      - ./../odoo-data/config:/etc/odoo
+      - ./../odoo-data/addons:/mnt/extra-addons
+
   db:
     image: postgres:9.4
     environment:
       - POSTGRES_PASSWORD=odoo
       - POSTGRES_USER=odoo
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - ./../odoo-data/db:/var/lib/postgresql/data/pgdata
