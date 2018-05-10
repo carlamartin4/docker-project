@@ -55,6 +55,11 @@ services:
     restart: always
     ports:
       - 8080:80
+    environment:
+      - VIRTUAL_HOST=drive.savebirds.tk
+      - CERT_NAME=savebirds.tk
+      - LETSENCRYPT_HOST=drive.savebirds.tk
+      - LETSENCRYPT_EMAIL=info@savebirds.tk
     volumes:
       - ./../owncloud-web-data:/var/www/html
 
@@ -72,8 +77,12 @@ services:
     ports:
       - 8090:80
     environment:
-      WORDPRESS_DB_HOST=wp_mysql
-      WORDPRESS_DB_PASSWORD: example
+      - WORDPRESS_DB_HOST=wp_mysql
+      - WORDPRESS_DB_PASSWORD: example
+      - VIRTUAL_HOST=www.savebirds.tk
+      - CERT_NAME=savebirds.tk
+      - LETSENCRYPT_HOST=www.savebirds.tk
+      - LETSENCRYPT_EMAIL=info@savebirds.tk
     volumes:
       - ./../wordpress-data/wp-content:/var/www/html/wp-content 
 
