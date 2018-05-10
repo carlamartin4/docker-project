@@ -71,14 +71,14 @@ services:
     volumes:
       - ./../owncloud-db-data:/var/lib/mysql
 
- wordpress:
+  wordpress:
     image: wordpress
     restart: always
     ports:
       - 8090:80
     environment:
       - WORDPRESS_DB_HOST=wp_mysql
-      - WORDPRESS_DB_PASSWORD: example
+      - WORDPRESS_DB_PASSWORD=example
       - VIRTUAL_HOST=www.savebirds.tk
       - CERT_NAME=savebirds.tk
       - LETSENCRYPT_HOST=www.savebirds.tk
@@ -90,6 +90,6 @@ services:
     image: mysql:5.7
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: example
+      - MYSQL_ROOT_PASSWORD=example
     volumes:
        - ./../wordpress-data/db:/var/lib/mysql
