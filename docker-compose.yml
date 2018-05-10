@@ -26,20 +26,22 @@ services:
 
 
   odoo:
-    image: odoo:10.0
+    image: odoo:11.0
     depends_on:
       - db
-    ports:
-      - "8069:8069"
     environment:
       - VIRTUAL_HOST=erp.savebirds.tk
-      - CERT_NAME=savebirds.tk
-      - LETSENCRYPT_HOST=erp.savebirds.tk
-      - LETSENCRYPT_EMAIL=info@savebirds.tk
+      - VIRTUAL_PORT=8069
+#      - CERT_NAME=savebirds.tk
+#      - LETSENCRYPT_HOST=erp.savebirds.tk
+#      - LETSENCRYPT_EMAIL=info@savebirds.tk
     volumes:
       - ./../odoo-data/odoo-web-data:/var/lib/odoo
       - ./../odoo-data/config:/etc/odoo
       - ./../odoo-data/addons:/mnt/extra-addons
+    networks:
+      - db-tier
+      - proxy-tier
 
   db:
     image: postgres:9.4
