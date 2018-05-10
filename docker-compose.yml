@@ -1,0 +1,86 @@
+version: '2'
+services:
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/etc/nginx/vhost.d"
+      - "/usr/share/nginx/html"
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+      - "/etc/nginx/certs"
+    networks:
+      - proxy-tier
+
+  letsencrypt-nginx-proxy-companion:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: letsencrypt-nginx-proxy-companion
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    volumes_from:
+      - "nginx-proxy"
+    networks:
+      - proxy-tier
+
+
+  odoo:
+    image: odoo:10.0
+    depends_on:
+      - db
+    ports:
+      - "8069:8069"
+    environment:
+      - VIRTUAL_HOST=erp.savebirds.tk
+      - CERT_NAME=savebirds.tk
+      - LETSENCRYPT_HOST=erp.savebirds.tk
+      - LETSENCRYPT_EMAIL=info@savebirds.tk
+    volumes:
+      - ./../odoo-data/odoo-web-data:/var/lib/odoo
+      - ./../odoo-data/config:/etc/odoo
+      - ./../odoo-data/addons:/mnt/extra-addons
+
+  db:
+    image: postgres:9.4
+    environment:
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - ./../odoo-data/db:/var/lib/postgresql/data/pgdata
+
+  owncloud:
+    image: owncloud
+    restart: always
+    ports:
+      - 8080:80
+    volumes:
+      - ./../owncloud-web-data:/var/www/html
+
+  mysql:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+    volumes:
+      - ./../owncloud-db-data:/var/lib/mysql
+
+ wordpress:
+    image: wordpress
+    restart: always
+    ports:
+      - 8090:80
+    environment:
+      WORDPRESS_DB_HOST=wp_mysql
+      WORDPRESS_DB_PASSWORD: example
+    volumes:
+      - ./../wordpress-data/wp-content:/var/www/html/wp-content 
+
+  wp_mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+    volumes:
+       - ./../wordpress-data/db:/var/lib/mysql
