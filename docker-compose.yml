@@ -49,7 +49,10 @@ services:
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - ./../odoo-data/db:/var/lib/postgresql/data/pgdata
+    networks:
+      - db-tier
 
+ 
   owncloud:
     image: owncloud
     restart: always
@@ -62,6 +65,9 @@ services:
       - LETSENCRYPT_EMAIL=info@savebirds.tk
     volumes:
       - ./../owncloud-web-data:/var/www/html
+    networks:
+      - db-tier
+      - proxy-tier
 
   mysql:
     image: mariadb
@@ -70,6 +76,8 @@ services:
       MYSQL_ROOT_PASSWORD: example
     volumes:
       - ./../owncloud-db-data:/var/lib/mysql
+    networks:
+      - db-tier
 
   wordpress:
     image: wordpress
@@ -85,7 +93,11 @@ services:
       - LETSENCRYPT_EMAIL=info@savebirds.tk
     volumes:
       - ./../wordpress-data/wp-content:/var/www/html/wp-content 
+    networks:
+      - db-tier
+      - proxy-tier
 
+ 
   wp_mysql:
     image: mysql:5.7
     restart: always
@@ -93,3 +105,13 @@ services:
       - MYSQL_ROOT_PASSWORD=example
     volumes:
        - ./../wordpress-data/db:/var/lib/mysql
+    networks:
+      - db-tier
+
+
+networks:
+  db-tier:
+    driver: bridge
+  proxy-tier:
+    driver: bridge
+
