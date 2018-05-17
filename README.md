@@ -25,3 +25,14 @@ Nginxe revers proxy:
 Let's Encrypt
 
 - It gives SSL certificates, so it allow secure connections.
+
+
+**INSTRUCTIONS:**
+
+1. Open Terminal
+2. Connect to ssh ea0@147.83.7.156 
+3. Go to cd docker-project
+4. Docker-compose up
+5. Go to Internet and erp.savebirds.tk, www.savebirds.tk and drive.savebirds.tk.
+
+
